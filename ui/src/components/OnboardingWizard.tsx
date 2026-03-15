@@ -63,7 +63,8 @@ type AdapterType =
   | "cursor"
   | "process"
   | "http"
-  | "openclaw_gateway";
+  | "openclaw_gateway"
+  | "openai_api";
 
 const DEFAULT_TASK_DESCRIPTION = `Setup yourself as the CEO. Use the ceo persona found here: 
 

@@ -34,6 +34,7 @@ const SUPPORTED_ADVANCED_ADAPTER_TYPES = new Set<CreateConfigValues["adapterType
   "pi_local",
   "cursor",
   "openclaw_gateway",
+  "openai_api",
 ]);
 
 function createValuesForAdapterType(
