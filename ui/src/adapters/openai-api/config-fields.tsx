@@ -104,14 +104,14 @@ export function OpenAIAPIConfigFields({
           <input
             type="number"
             className={inputClass}
-            value={4096}
+            value={200000}
             min={1}
             step={100}
             onChange={() => {}}
           />
         ) : (
           <DraftNumberInput
-            value={eff("adapterConfig", "maxTokens", Number(config.maxTokens ?? 4096))}
+            value={eff("adapterConfig", "maxTokens", Number(config.maxTokens ?? 200000))}
             onCommit={(v) => mark("adapterConfig", "maxTokens", v)}
             immediate
             className={inputClass}

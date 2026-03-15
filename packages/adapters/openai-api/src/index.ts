@@ -25,7 +25,7 @@ Core fields:
 - model (string, required): Model ID to use (e.g., daily-llm, claude-opus-4-6, gpt-4o)
 - apiKey (string, optional): API key if required by the service
 - temperature (number, optional): Sampling temperature (0-2), defaults to 0.7
-- maxTokens (number, optional): Maximum tokens in response, defaults to 4096
+- maxTokens (number, optional): Maximum tokens in response, defaults to 200000
 - topP (number, optional): Top-P sampling (0-1), defaults to 1
 - promptTemplate (string, optional): Prompt template for agent context
 - bootstrapPromptTemplate (string, optional): Bootstrap prompt for fresh sessions

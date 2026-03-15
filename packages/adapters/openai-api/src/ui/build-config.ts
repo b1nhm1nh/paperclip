@@ -18,7 +18,7 @@ export function parseOpenAIAPIConfig(raw: Record<string, unknown>): OpenAIAPIFor
     apiKey: typeof raw.apiKey === "string" ? raw.apiKey : "",
     temperature:
       typeof raw.temperature === "number" ? raw.temperature : 0.7,
-    maxTokens: typeof raw.maxTokens === "number" ? raw.maxTokens : 4096,
+    maxTokens: typeof raw.maxTokens === "number" ? raw.maxTokens : 200000,
     topP: typeof raw.topP === "number" ? raw.topP : 1,
     timeoutSec: typeof raw.timeoutSec === "number" ? raw.timeoutSec : 300,
     promptTemplate:

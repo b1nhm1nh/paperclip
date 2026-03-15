@@ -14,7 +14,7 @@ function buildOpenAIAPIConfig(values: CreateConfigValues): Record<string, unknow
     model: values.model || "daily-llm",
     ...(values.args?.trim() ? { apiKey: values.args.trim() } : {}),
     temperature: 0.7,
-    maxTokens: 4096,
+    maxTokens: 200000,
     promptTemplate: values.promptTemplate || "You are agent {{agent.id}} ({{agent.name}}). Continue your Paperclip work.",
   };
 }

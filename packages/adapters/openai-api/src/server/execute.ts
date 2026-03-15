@@ -235,7 +235,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   const model = asString(config.model, "daily-llm");
   const apiKey = asString(config.apiKey, "").trim() || null;
   const temperature = asNumber(config.temperature, 0.7);
-  const maxTokens = asNumber(config.maxTokens, 4096);
+  const maxTokens = asNumber(config.maxTokens, 200000);
   const topP = asNumber(config.topP, 1);
   const timeoutSec = asNumber(config.timeoutSec, 300);
   const promptTemplate = asString(

@@ -46,7 +46,7 @@ export const formFields = {
     min: 1,
     max: 100000,
     step: 100,
-    default: 4096,
+    default: 200000,
     help: "Maximum tokens in the response",
   },
   topP: {
