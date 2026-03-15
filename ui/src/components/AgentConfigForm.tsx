@@ -285,7 +285,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
     adapterType === "codex_local" ||
     adapterType === "gemini_local" ||
     adapterType === "opencode_local" ||
-    adapterType === "cursor";
+    adapterType === "cursor" ||
+    adapterType === "openai_api";
   const uiAdapter = useMemo(() => getUIAdapter(adapterType), [adapterType]);
 
   // Fetch adapter models for the effective adapter type
