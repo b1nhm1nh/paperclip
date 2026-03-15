@@ -12,7 +12,7 @@ function buildOpenAIAPIConfig(values: CreateConfigValues): Record<string, unknow
   return {
     baseUrl: values.url || "http://localhost:20128/v1",
     model: values.model || "daily-llm",
-    ...(values.envVars ? { apiKey: values.envVars } : {}),
+    ...(values.args?.trim() ? { apiKey: values.args.trim() } : {}),
     temperature: 0.7,
     maxTokens: 4096,
     promptTemplate: values.promptTemplate || "You are agent {{agent.id}} ({{agent.name}}). Continue your Paperclip work.",

@@ -50,6 +50,7 @@ import {
   Loader2,
   FolderOpen,
   ChevronDown,
+  Globe,
   X
 } from "lucide-react";
 
@@ -788,6 +789,12 @@ export function OnboardingWizard() {
                             desc: "Invoke OpenClaw via gateway protocol",
                             comingSoon: true,
                             disabledLabel: "Configure OpenClaw within the App"
+                          },
+                          {
+                            value: "openai_api" as const,
+                            label: "OpenAI API",
+                            icon: Globe,
+                            desc: "Any OpenAI-compatible LLM"
                           }
                         ].map((opt) => (
                           <button
@@ -1125,6 +1132,48 @@ export function OnboardingWizard() {
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                       />
+                    </div>
+                  )}
+
+                  {adapterType === "openai_api" && (
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <label className="text-xs text-muted-foreground">
+                            Base URL
+                          </label>
+                          <HintIcon text="OpenAI-compatible API endpoint. Supports local LLMs, Claude/Gemini/GLM via proxy, or any /v1/chat/completions service." />
+                        </div>
+                        <input
+                          className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm font-mono outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
+                          placeholder="http://localhost:20128/v1"
+                          value={url || "http://localhost:20128/v1"}
+                          onChange={(e) => setUrl(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground mb-1 block">
+                          Model
+                        </label>
+                        <input
+                          className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm font-mono outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
+                          placeholder="daily-llm"
+                          value={model || "daily-llm"}
+                          onChange={(e) => setModel(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground mb-1 block">
+                          API Key (optional)
+                        </label>
+                        <input
+                          type="password"
+                          className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm font-mono outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
+                          placeholder="sk-... (leave empty if not required)"
+                          value={args}
+                          onChange={(e) => setArgs(e.target.value)}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
