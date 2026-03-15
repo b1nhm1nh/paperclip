@@ -1,0 +1,90 @@
+export { parseOpenAIAPIConfig, buildOpenAIAPIConfig } from "./build-config.js";
+export type { OpenAIAPIFormValues } from "./build-config.js";
+
+// UI component markers for the frontend to render form fields
+export const formFields = {
+  baseUrl: {
+    label: "Base URL",
+    type: "text" as const,
+    placeholder: "http://localhost:20128/v1",
+    required: true,
+    help: "OpenAI-compatible API endpoint URL",
+  },
+  model: {
+    label: "Model",
+    type: "select" as const,
+    required: true,
+    options: [
+      { value: "daily-llm", label: "Daily LLM" },
+      { value: "claude-opus-4-6", label: "Claude Opus 4.6" },
+      { value: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
+      { value: "gpt-4o", label: "GPT-4o" },
+      { value: "gpt-4-turbo", label: "GPT-4 Turbo" },
+      { value: "gemini-pro", label: "Gemini Pro" },
+    ],
+    help: "Model to use for completions",
+  },
+  apiKey: {
+    label: "API Key (optional)",
+    type: "password" as const,
+    placeholder: "sk-...",
+    required: false,
+    help: "API key if required by the service",
+  },
+  temperature: {
+    label: "Temperature",
+    type: "number" as const,
+    min: 0,
+    max: 2,
+    step: 0.1,
+    default: 0.7,
+    help: "Sampling temperature (0-2), lower = more deterministic",
+  },
+  maxTokens: {
+    label: "Max Tokens",
+    type: "number" as const,
+    min: 1,
+    max: 100000,
+    step: 100,
+    default: 4096,
+    help: "Maximum tokens in the response",
+  },
+  topP: {
+    label: "Top P",
+    type: "number" as const,
+    min: 0,
+    max: 1,
+    step: 0.05,
+    default: 1,
+    help: "Nucleus sampling parameter",
+  },
+  timeoutSec: {
+    label: "Timeout (seconds)",
+    type: "number" as const,
+    min: 10,
+    max: 3600,
+    step: 10,
+    default: 300,
+    help: "Request timeout in seconds",
+  },
+  promptTemplate: {
+    label: "Prompt Template",
+    type: "textarea" as const,
+    rows: 6,
+    default: "You are agent {{agent.id}} ({{agent.name}}). Continue your Paperclip work.",
+    help: "Prompt template sent on each heartbeat. Use {{agent.id}}, {{agent.name}}, {{runId}}, {{context}} variables.",
+  },
+  bootstrapPromptTemplate: {
+    label: "Bootstrap Prompt (optional)",
+    type: "textarea" as const,
+    rows: 4,
+    help: "Optional initial prompt for fresh sessions. Variables: {{agent.id}}, {{agent.name}}, {{runId}}",
+  },
+  envVars: {
+    label: "Environment Variables",
+    type: "textarea" as const,
+    rows: 4,
+    placeholder: "KEY1=value1\nKEY2=value2",
+    help: "Environment variables (one per line, KEY=value format)",
+  },
+};

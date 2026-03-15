@@ -51,6 +51,13 @@ import {
 import {
   agentConfigurationDoc as piAgentConfigurationDoc,
 } from "@paperclipai/adapter-pi-local";
+import {
+  execute as openaiApiExecute,
+  testEnvironment as openaiApiTestEnvironment,
+  sessionCodec as openaiApiSessionCodec,
+  models as openaiApiModels,
+} from "@paperclipai/adapter-openai-api/server";
+import { agentConfigurationDoc as openaiApiAgentConfigurationDoc } from "@paperclipai/adapter-openai-api";
 import { processAdapter } from "./process/index.js";
 import { httpAdapter } from "./http/index.js";
 
@@ -127,6 +134,16 @@ const piLocalAdapter: ServerAdapterModule = {
   agentConfigurationDoc: piAgentConfigurationDoc,
 };
 
+const openaiApiAdapter: ServerAdapterModule = {
+  type: "openai_api",
+  execute: openaiApiExecute,
+  testEnvironment: openaiApiTestEnvironment,
+  sessionCodec: openaiApiSessionCodec,
+  models: openaiApiModels,
+  supportsLocalAgentJwt: false,
+  agentConfigurationDoc: openaiApiAgentConfigurationDoc,
+};
+
 const adaptersByType = new Map<string, ServerAdapterModule>(
   [
     claudeLocalAdapter,
@@ -136,6 +153,7 @@ const adaptersByType = new Map<string, ServerAdapterModule>(
     cursorLocalAdapter,
     geminiLocalAdapter,
     openclawGatewayAdapter,
+    openaiApiAdapter,
     processAdapter,
     httpAdapter,
   ].map((a) => [a.type, a]),
