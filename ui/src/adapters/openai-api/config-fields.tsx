@@ -38,6 +38,26 @@ export function OpenAIAPIConfigFields({
         )}
       </Field>
 
+      <Field label="Model" hint="Model ID to use (e.g. daily-llm, claude-opus-4-6, gpt-4o)">
+        {isCreate ? (
+          <input
+            type="text"
+            className={inputClass}
+            value={values!.model ?? "daily-llm"}
+            onChange={(e) => set!({ model: e.target.value })}
+            placeholder="daily-llm"
+          />
+        ) : (
+          <DraftInput
+            value={eff("adapterConfig", "model", String(config.model ?? "daily-llm"))}
+            onCommit={(v) => mark("adapterConfig", "model", v)}
+            immediate
+            className={inputClass}
+            placeholder="daily-llm"
+          />
+        )}
+      </Field>
+
       <Field label="API Key" hint="Optional API key for authentication">
         {isCreate ? (
           <input
