@@ -136,9 +136,10 @@ async function callOpenAIAPI(
       signal: controller.signal,
     });
 
-    clearTimeout(timeoutHandle);
+    // Don't clear timeout yet — keep it active while reading the stream
 
     if (!fetchResponse.ok) {
+      clearTimeout(timeoutHandle);
       const errorBody = await fetchResponse.text();
       const errorData = (() => {
         try {
@@ -155,48 +156,74 @@ async function callOpenAIAPI(
 
     // If server returned plain JSON despite stream:true, handle it
     if (contentType.includes("application/json")) {
+      clearTimeout(timeoutHandle);
       const rawResponse = await fetchResponse.text();
       const data = JSON.parse(rawResponse) as OpenAIChatCompletionResponse;
       return { response: data, rawResponse };
     }
 
-    // Stream SSE response
+    // Read SSE stream incrementally using the body reader
     await onLog("stderr", `[openai-api] Streaming response...\n`);
 
-    const rawResponse = await fetchResponse.text();
     const contentParts: string[] = [];
     let responseId = "";
     let responseModel = request.model;
     let totalPromptTokens = 0;
     let totalCompletionTokens = 0;
     let finishReason: string | null = null;
+    let buffer = "";
 
-    for (const line of rawResponse.split("\n")) {
-      const trimmed = line.trim();
-      if (!trimmed.startsWith("data: ")) continue;
-      const payload = trimmed.slice(6);
-      if (payload === "[DONE]") break;
+    const reader = fetchResponse.body?.getReader();
+    if (!reader) {
+      clearTimeout(timeoutHandle);
+      throw new Error("No response body reader available");
+    }
 
-      try {
-        const chunk = JSON.parse(payload);
-        if (chunk.id) responseId = chunk.id;
-        if (chunk.model) responseModel = chunk.model;
-        if (chunk.usage) {
-          totalPromptTokens = chunk.usage.prompt_tokens ?? totalPromptTokens;
-          totalCompletionTokens = chunk.usage.completion_tokens ?? totalCompletionTokens;
+    const decoder = new TextDecoder();
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Process complete lines from the buffer
+        const lines = buffer.split("\n");
+        // Keep the last potentially incomplete line in the buffer
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data: ")) continue;
+          const payload = trimmed.slice(6);
+          if (payload === "[DONE]") continue;
+
+          try {
+            const chunk = JSON.parse(payload);
+            if (chunk.id) responseId = chunk.id;
+            if (chunk.model) responseModel = chunk.model;
+            if (chunk.usage) {
+              totalPromptTokens = chunk.usage.prompt_tokens ?? totalPromptTokens;
+              totalCompletionTokens = chunk.usage.completion_tokens ?? totalCompletionTokens;
+            }
+            const choice = chunk.choices?.[0];
+            if (choice?.delta?.content) {
+              contentParts.push(choice.delta.content);
+              // Stream content to stdout log so the UI can show real-time output
+              await onLog("stdout", choice.delta.content);
+            }
+            if (choice?.finish_reason) {
+              finishReason = choice.finish_reason;
+            }
+          } catch {
+            // skip unparseable chunks
+          }
         }
-        const choice = chunk.choices?.[0];
-        if (choice?.delta?.content) {
-          contentParts.push(choice.delta.content);
-          // Stream content to stdout log so the UI can show real-time output
-          await onLog("stdout", choice.delta.content);
-        }
-        if (choice?.finish_reason) {
-          finishReason = choice.finish_reason;
-        }
-      } catch {
-        // skip unparseable lines
       }
+    } finally {
+      clearTimeout(timeoutHandle);
+      reader.releaseLock();
     }
 
     const assembled: OpenAIChatCompletionResponse = {
@@ -221,7 +248,7 @@ async function callOpenAIAPI(
       ],
     };
 
-    return { response: assembled, rawResponse };
+    return { response: assembled, rawResponse: contentParts.join("") };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`Failed to call OpenAI API: ${message}`);
