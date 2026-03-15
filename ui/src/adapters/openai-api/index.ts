@@ -10,6 +10,7 @@ function parseOpenAIStdoutLine(line: string, ts: string): TranscriptEntry[] {
 
 function buildOpenAIAPIConfig(values: CreateConfigValues): Record<string, unknown> {
   return {
+    ...(values.cwd ? { cwd: values.cwd } : {}),
     baseUrl: values.url || "http://localhost:20128/v1",
     model: values.model || "daily-llm",
     ...(values.args?.trim() ? { apiKey: values.args.trim() } : {}),

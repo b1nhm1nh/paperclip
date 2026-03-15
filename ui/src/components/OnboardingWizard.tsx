@@ -180,7 +180,8 @@ export function OnboardingWizard() {
     adapterType === "codex_local" ||
     adapterType === "gemini_local" ||
     adapterType === "opencode_local" ||
-    adapterType === "cursor";
+    adapterType === "cursor" ||
+    adapterType === "openai_api";
   const effectiveAdapterCommand =
     command.trim() ||
     (adapterType === "codex_local"
@@ -849,7 +850,8 @@ export function OnboardingWizard() {
                     adapterType === "gemini_local" ||
                     adapterType === "opencode_local" ||
                     adapterType === "pi_local" ||
-                    adapterType === "cursor") && (
+                    adapterType === "cursor" ||
+                    adapterType === "openai_api") && (
                     <div className="space-y-3">
                       <div>
                         <div className="flex items-center gap-1.5 mb-1">
